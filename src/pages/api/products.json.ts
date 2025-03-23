@@ -1,10 +1,10 @@
 import type { APIRoute } from "astro";
-import { getProducts } from "@/lib/shopify";
+import { getProducts } from "@/lib/store";
 
 export const GET: APIRoute = async ({ request }) => {
   const url = new URL(request.url);
   const cursor = url.searchParams.get("cursor");
-  const sortKey = url.searchParams.get("sortKey") as string;
+  const sortKey = url.searchParams.get("sortKey") as "RELEVANCE" | "BEST_SELLING" | "CREATED_AT" | "PRICE";
   const reverse = url.searchParams.get("reverse") === "true";
 
   try {

@@ -61,7 +61,7 @@ import type {
   registerOperation,
   user,
   userOperation,
-} from "./types";
+} from "../types";
 
 const domain = import.meta.env.PUBLIC_SHOPIFY_STORE_DOMAIN
   ? ensureStartsWith(import.meta.env.PUBLIC_SHOPIFY_STORE_DOMAIN, "https://")

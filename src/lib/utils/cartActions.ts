@@ -5,7 +5,7 @@ import {
   getCart,
   removeFromCart,
   updateCart,
-} from "@/lib/shopify";
+} from "@/lib/store";
 
 export async function addItem(selectedVariantId: string | undefined) {
   let cartId = Cookies.get("cartId");
