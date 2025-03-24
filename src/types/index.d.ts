@@ -1,3 +1,4 @@
+import type { JSX } from "astro/jsx-runtime"
 export type Faq = {
   title: string;
   content: string;
@@ -9,3 +10,11 @@ export type Testimonial = {
   avatar: string;
   content: string;
 };
+
+export type typeItemNavigation = {
+    id: number
+    name: string|JSX.Element
+    className?: string
+    href?: string|undefined
+    action?: any
+}

@@ -8,6 +8,7 @@ import Header from "@/partials/Header.astro";
 import "@/styles/main.css";
 import { AstroFont } from "astro-font";
 import { ClientRouter } from "astro:transitions";
+import CustomHeader from "./functional-components/Header/Index";
 
 // font families
 const pf = theme.fonts.font_family.primary;
@@ -171,7 +172,7 @@ const { title, meta_title, description, image, noindex, canonical } =
   </head>
   <body>
     <TwSizeIndicator />
-    <Header />
+    <CustomHeader client:only="react"/>
     <main id="main-content">
       <slot />
     </main>
