@@ -1,6 +1,6 @@
 {
   "site": {
-    "title": "Astrofront",
+    "title": "Ventumoda",
     "base_url": "https://astrofront.vercel.app/",
     "base_path": "/",
     "trailing_slash": false,
@@ -9,7 +9,7 @@
     "logo_darkmode": "/images/logo-darkmode.png",
     "logo_width": "150",
     "logo_height": "33",
-    "logo_text": "Astrofront"
+    "logo_text": "Ventumoda"
   },
 
   "settings": {

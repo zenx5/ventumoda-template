@@ -1,9 +1,27 @@
-import { getUserDetails } from "@/lib/store";
 import type { user } from "@/lib/store/types";
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import Gravatar from "react-gravatar";
 import { BsPerson } from "react-icons/bs";
+import { getAuth } from "firebase/auth";
+import { app } from "@/firebase/client";
+
+const getUserDetails = async (accessToken:string): Promise<user> => {
+    const firstName = ""
+    const lastName = ""
+    const email = ""
+    const phone = ""
+
+    return {
+        customer: {
+            firstName,
+            lastName,
+            email,
+            phone,
+            acceptsMarketing: false
+        }
+    }
+}
 
 export const fetchUser = async () => {
   try {
@@ -25,7 +43,6 @@ export const fetchUser = async () => {
 const NavUser = ({ pathname }: { pathname: string }) => {
   const [user, setUser] = useState<any>();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
   useEffect(() => {
     const getUser = async () => {
       const userInfo = await fetchUser();
