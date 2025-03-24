@@ -1,4 +1,7 @@
 import type { user } from "../types";
+import { getAuth } from "firebase-admin/auth";
+import { app } from "../../../firebase/server";
+
 
 export const getUserDetails = async (accessToken:string): Promise<user> => {
     const firstName = ""
@@ -27,6 +30,9 @@ export const getCustomerAccessToken = async ({
     token: string
     customerLoginErrors: string[]
 }> => {
+    const auth = getAuth(app);
+    const user = await auth.getUserByEmail( email )
+    user
  
     return {
         token: "",

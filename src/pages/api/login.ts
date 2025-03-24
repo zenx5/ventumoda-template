@@ -1,7 +1,54 @@
+import type { APIRoute } from "astro";
 import { getCustomerAccessToken, getUserDetails } from "@/lib/store";
+import { app } from "../../firebase/server";
+import { getAuth } from "firebase-admin/auth";
 
-// Exporting the handler function for the API route
-export const POST = async ({ request }: { request: Request }) => {
+export const GET:APIRoute = async({ request, cookies, redirect }:any) => {
+  const auth = getAuth(app);
+
+  /* Get token from request headers */
+  const idToken = request.headers.get("Authorization")?.split("Bearer ")[1];
+  if (!idToken) {
+    return new Response(
+      "No token found",
+      { status: 401 }
+    );
+  }
+
+  /* Verify id token */
+  try {
+    await auth.verifyIdToken(idToken);
+  } catch (error) {
+    return new Response(
+      "Invalid token",
+      { status: 401 }
+    );
+  }
+
+  /* Create and set session cookie */
+  const fiveDays = 60 * 60 * 24 * 5 * 1000;
+  const sessionCookie = await auth.createSessionCookie(idToken, {
+    expiresIn: fiveDays,
+  });
+
+  cookies.set("__session", sessionCookie, {
+    path: "/",
+  });
+
+  const { customer } = await getUserDetails(idToken);
+
+  const response = new Response(JSON.stringify({ ...customer, token:idToken }), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
+
+  // Set token in cookie with HttpOnly flag
+  response.headers.set("Set-Cookie", `token=${idToken}; Path=/; SameSite=Lax`);
+
+  return response;
+}
+
+export const POST:APIRoute = async ({ request, cookies, redirect }:any ) => { // { request: Request }
   try {
     const { email, password } = await request.json();
 

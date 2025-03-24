@@ -1,6 +1,8 @@
 ---
 import Base from "@/layouts/Base.astro";
 import { BiLoaderAlt } from "react-icons/bi";
+import { app } from "../firebase/server";
+import { getAuth } from "firebase-admin/auth";
 ---
 
 <Base title="Login">
@@ -70,6 +72,17 @@ import { BiLoaderAlt } from "react-icons/bi";
   </section>
 
   <script>
+    import {
+      getAuth,
+      inMemoryPersistence,
+      signInWithEmailAndPassword,
+    } from "firebase/auth";
+    import { app } from "../firebase/client"
+
+    const auth = getAuth(app);
+    auth.setPersistence(inMemoryPersistence);
+
+
     interface LoginResponse {
       token: string;
       customer: object;
@@ -102,11 +115,19 @@ import { BiLoaderAlt } from "react-icons/bi";
       try {
         buttonText?.classList.add("hidden");
         loader?.classList.remove("hidden");
+        
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        const idToken = await userCredential.user.getIdToken();
 
         const response = await fetch("/api/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
+          method: "GET",
+          headers: { 
+            Authorization: `Bearer ${idToken}`
+          },
         });
 
         if (!response.ok) {
