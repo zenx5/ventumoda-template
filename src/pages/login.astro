@@ -3,6 +3,19 @@ import Base from "@/layouts/Base.astro";
 import { BiLoaderAlt } from "react-icons/bi";
 import { app } from "../firebase/server";
 import { getAuth } from "firebase-admin/auth";
+
+const { cookies } = Astro
+/* Check if the user is authenticated */
+const auth = getAuth(app);
+if (cookies && cookies.has("__session")) {
+  const sessionCookie = cookies.get("__session")?.value;
+  if( sessionCookie ){
+    const decodedCookie = await auth.verifySessionCookie(sessionCookie);
+    if (decodedCookie) {
+      return Astro.redirect("/");
+    }
+  }
+}
 ---
 
 <Base title="Login">

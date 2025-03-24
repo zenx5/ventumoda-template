@@ -27,15 +27,15 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // Generate token
-    const { token } = await getCustomerAccessToken({ email, password });
+    // const { token } = await getCustomerAccessToken({ email, password });
 
-    const response = new Response(JSON.stringify({ customer, token }), {
+    const response = new Response(JSON.stringify({ customer }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
 
     // Set the authentication token in a cookie without HttpOnly
-    response.headers.set("Set-Cookie", `token=${token}; Path=/; SameSite=Lax`);
+    // response.headers.set("Set-Cookie", `token=${token}; Path=/; SameSite=Lax`);
 
     return response;
   } catch (error: any) {

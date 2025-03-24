@@ -1,5 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BiLoaderAlt } from "react-icons/bi";
+import {
+  getAuth,
+  inMemoryPersistence,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { app } from "../../firebase/client"
 
 export interface FormData {
   firstName?: string;
@@ -13,9 +19,12 @@ const SignUpForm = () => {
     email: "",
     password: "",
   });
+  const auth = getAuth(app);
+  auth.setPersistence(inMemoryPersistence);
 
   const [loading, setLoading] = useState(false);
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -45,9 +54,10 @@ const SignUpForm = () => {
         const responseData = await response.json();
 
         if (response.ok) {
-          setErrorMessages([]);
-          localStorage.setItem("user", JSON.stringify(responseData));
-          window.location.href = "/";
+          // setErrorMessages([]);
+          // localStorage.setItem("user", JSON.stringify(responseData));
+          // window.location.href = "/";
+          await login( formData.email, formData.password )
         } else {
           const errors = responseData.errors || [
             { message: "Sign-up failed." },
@@ -64,6 +74,35 @@ const SignUpForm = () => {
       setLoading(false);
     }
   };
+
+  const login = async ( email:string, password:string ) => {
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const idToken = await userCredential.user.getIdToken();
+    const response = await fetch("/api/login", {
+      method: "GET",
+      headers: { 
+        Authorization: `Bearer ${idToken}`
+      },
+    });
+    if (response.redirected) {
+      window.location.assign(response.url);
+    }
+    if (!response.ok) {
+      const responseData = await response.json();
+      const errors = responseData.errors || [];
+      console.log( errors )      
+      return;
+    }
+
+    const responseData = await response.json();
+    // Clear errors and save user data to localStorage
+    localStorage.setItem("user", JSON.stringify(responseData));
+    window.location.href = "/";
+  }
 
   return (
     <section className="section">
